@@ -1,0 +1,3 @@
+default:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension: {}

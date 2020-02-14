@@ -1,0 +1,28 @@
+{
+    "name": "nicwortel/behat-unused-step-definitions-extension",
+    "type": "library",
+    "description": "A Behat extension that detects unused step definitions",
+    "license": "MIT",
+    "require": {
+        "php": "^7.2",
+        "behat/behat": "^3.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.12.10",
+        "phpunit/phpunit": "^9.0",
+        "symfony/process": "^5.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "NicWortel\\BehatUnusedStepDefinitionsExtension\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NicWortel\\BehatUnusedStepDefinitionsExtension\\Tests\\": "tests/"
+        }
+    }
+}
