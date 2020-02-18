@@ -1,10 +1,20 @@
 # Behat Unused Step Definitions Extension
 
-A Behat extension that detects unused step definitions.
+Do you have a large Behat test suite? Would you like to check your feature
+contexts for unused step definitions?
+This Behat extension detects and reports step definitions that are not being
+used in any of your `*.feature` files.
 
 [![Build Status](https://travis-ci.com/nicwortel/behat-unused-step-definitions-extension.svg?branch=master)](https://travis-ci.com/nicwortel/behat-unused-step-definitions-extension)
+[![License](https://img.shields.io/github/license/nicwortel/behat-unused-step-definitions-extension)](https://github.com/nicwortel/behat-unused-step-definitions-extension/blob/master/LICENSE.txt)
+[![Required PHP version](https://img.shields.io/packagist/php-v/nicwortel/behat-unused-step-definitions-extension)](https://github.com/nicwortel/behat-unused-step-definitions-extension/blob/master/composer.json)
+[![Current version](https://img.shields.io/packagist/v/nicwortel/behat-unused-step-definitions-extension)](https://packagist.org/packages/nicwortel/behat-unused-step-definitions-extension)
 
 ## Installation
+
+```bash
+composer require --dev nicwortel/behat-unused-step-definitions-extension
+```
 
 Activate the extension in your `behat.yml`:
 
@@ -13,3 +23,16 @@ default:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension: ~
 ```
+
+## Usage
+
+After following the installation steps as documented above, simply run Behat.
+Instead of actually executing the tests, a dry run will be enough to collect
+information about unused step definitions:
+
+```bash
+vendor/bin/behat --dry-run
+```
+
+Note that if you have multiple suites, the unused step definitions will be
+listed per suite after the suite has finished.
