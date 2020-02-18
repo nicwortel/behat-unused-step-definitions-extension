@@ -8,6 +8,11 @@ install: composer install
 
 script: make
 
+jobs:
+  include:
+    - name: Test with lowest dependency versions
+      install: composer update --prefer-lowest
+
 cache:
   directories:
     - $HOME/.composer/cache/files
