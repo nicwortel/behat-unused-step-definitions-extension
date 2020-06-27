@@ -12,9 +12,6 @@ use Behat\Testwork\EventDispatcher\Event\AfterSuiteTested;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use function array_diff;
-use function sprintf;
-
-use const PHP_EOL;
 
 final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
 {
@@ -29,16 +26,23 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
     private $definitionRepository;
 
     /**
+     * @var UnusedStepDefinitionsPrinter
+     */
+    private $printer;
+
+    /**
      * @var array<Definition>
      */
     private $usedDefinitions = [];
 
     public function __construct(
         DefinitionFinder $definitionFinder,
-        DefinitionRepository $definitionRepository
+        DefinitionRepository $definitionRepository,
+        UnusedStepDefinitionsPrinter $printer
     ) {
         $this->definitionFinder = $definitionFinder;
         $this->definitionRepository = $definitionRepository;
+        $this->printer = $printer;
     }
 
     /**
@@ -74,12 +78,6 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
         /** @var Definition[] $unusedDefinitions */
         $unusedDefinitions = array_diff($definitions, $this->usedDefinitions);
 
-        foreach ($unusedDefinitions as $unusedDefinition) {
-            echo sprintf(
-                'Unused definition: %s %s',
-                $unusedDefinition->getType(),
-                $unusedDefinition->getPattern()
-            ) . PHP_EOL;
-        }
+        $this->printer->printUnusedStepDefinitions($unusedDefinitions);
     }
 }

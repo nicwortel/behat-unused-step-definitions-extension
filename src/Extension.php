@@ -6,6 +6,7 @@ namespace NicWortel\BehatUnusedStepDefinitionsExtension;
 
 use Behat\Behat\Definition\ServiceContainer\DefinitionExtension;
 use Behat\Behat\EventDispatcher\ServiceContainer\EventDispatcherExtension;
+use Behat\Testwork\Cli\ServiceContainer\CliExtension;
 use Behat\Testwork\ServiceContainer\Extension as BehatExtension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -42,10 +43,19 @@ final class Extension implements BehatExtension
             [
                 new Reference(DefinitionExtension::FINDER_ID),
                 new Reference(DefinitionExtension::REPOSITORY_ID),
+                new Reference('unused_step_definitions_printer'),
             ]
         );
         $serviceDefinition->addTag(EventDispatcherExtension::SUBSCRIBER_TAG);
 
         $container->setDefinition('unused_step_definitions_checker', $serviceDefinition);
+
+        $container->setDefinition(
+            'unused_step_definitions_printer',
+            new Definition(
+                ConsoleUnusedStepDefinitionsPrinter::class,
+                [new Reference(CliExtension::OUTPUT_ID)]
+            )
+        );
     }
 }
