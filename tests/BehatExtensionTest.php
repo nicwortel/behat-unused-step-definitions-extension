@@ -13,8 +13,10 @@ class BehatExtensionTest extends TestCase
         $behat = new Process(['../../vendor/bin/behat', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
         $behat->mustRun();
 
-        $this->assertStringContainsString('Unused definition: Given some precondition that is never used in a feature', $behat->getOutput());
-        $this->assertStringContainsString('Unused definition: Then some step that is never used by a feature', $behat->getOutput());
+        $this->assertStringContainsString('2 unused step definitions:', $behat->getOutput());
+
+        $this->assertStringContainsString('Given some precondition that is never used in a feature # FeatureContext::somePrecondition()', $behat->getOutput());
+        $this->assertStringContainsString('Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()', $behat->getOutput());
     }
 
     public function testDoesNotPrintStepDefinitionsThatAreUsed(): void
@@ -22,6 +24,6 @@ class BehatExtensionTest extends TestCase
         $behat = new Process(['../../vendor/bin/behat', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
         $behat->mustRun();
 
-        $this->assertStringNotContainsString('Unused definition: When some action by the actor', $behat->getOutput());
+        $this->assertStringNotContainsString('When some action by the actor # FeatureContext::someActionByTheActor()', $behat->getOutput());
     }
 }

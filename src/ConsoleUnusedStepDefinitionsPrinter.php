@@ -6,6 +6,7 @@ namespace NicWortel\BehatUnusedStepDefinitionsExtension;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function count;
 use function sprintf;
 
 final class ConsoleUnusedStepDefinitionsPrinter implements UnusedStepDefinitionsPrinter
@@ -25,12 +26,25 @@ final class ConsoleUnusedStepDefinitionsPrinter implements UnusedStepDefinitions
      */
     public function printUnusedStepDefinitions(array $unusedDefinitions): void
     {
-        foreach ($unusedDefinitions as $unusedDefinition) {
-            $this->output->writeln(sprintf(
-                'Unused definition: %s %s',
-                $unusedDefinition->getType(),
-                $unusedDefinition->getPattern()
-            ));
+        if (count($unusedDefinitions) === 0) {
+            return;
         }
+
+        $this->output->writeln(
+            sprintf('<comment>%d unused step definitions</comment>:', count($unusedDefinitions))
+        );
+
+        foreach ($unusedDefinitions as $unusedDefinition) {
+            $this->output->writeln(
+                sprintf(
+                    ' - <comment>%s %s</comment> <def_dimmed># %s</def_dimmed>',
+                    $unusedDefinition->getType(),
+                    $unusedDefinition->getPattern(),
+                    $unusedDefinition->getPath()
+                )
+            );
+        }
+
+        $this->output->writeln('');
     }
 }
