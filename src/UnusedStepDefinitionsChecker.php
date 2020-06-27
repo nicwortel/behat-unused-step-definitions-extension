@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace NicWortel\BehatUnusedStepDefinitionsExtension;
@@ -9,7 +10,10 @@ use Behat\Behat\Definition\DefinitionRepository;
 use Behat\Behat\EventDispatcher\Event\AfterStepTested;
 use Behat\Testwork\EventDispatcher\Event\AfterSuiteTested;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 use function array_diff;
+use function sprintf;
+
 use const PHP_EOL;
 
 final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
@@ -72,10 +76,10 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
 
         foreach ($unusedDefinitions as $unusedDefinition) {
             echo sprintf(
-                    'Unused definition: %s %s',
-                    $unusedDefinition->getType(),
-                    $unusedDefinition->getPattern()
-                ) . PHP_EOL;
+                'Unused definition: %s %s',
+                $unusedDefinition->getType(),
+                $unusedDefinition->getPattern()
+            ) . PHP_EOL;
         }
     }
 }
