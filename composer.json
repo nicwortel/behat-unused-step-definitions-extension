@@ -4,7 +4,7 @@
     "description": "A Behat extension that detects unused step definitions",
     "license": "MIT",
     "require": {
-        "php": "^7.2",
+        "php": "^7.3 || ^8.0",
         "behat/behat": "^3.0"
     },
     "require-dev": {
