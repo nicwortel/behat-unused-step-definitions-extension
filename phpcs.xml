@@ -10,6 +10,9 @@
     <arg value="p" />
 
     <file>src/</file>
+    <file>tests/</file>
+
+    <exclude-pattern>tests/fixtures/features/bootstrap/FeatureContext.php</exclude-pattern>
 
     <rule ref="NicWortel"/>
 </ruleset>
