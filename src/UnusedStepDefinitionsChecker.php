@@ -15,25 +15,16 @@ use function array_diff;
 
 final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
 {
-    /**
-     * @var DefinitionFinder
-     */
-    private $definitionFinder;
+    private DefinitionFinder $definitionFinder;
 
-    /**
-     * @var DefinitionRepository
-     */
-    private $definitionRepository;
+    private DefinitionRepository $definitionRepository;
 
-    /**
-     * @var UnusedStepDefinitionsPrinter
-     */
-    private $printer;
+    private UnusedStepDefinitionsPrinter $printer;
 
     /**
      * @var array<Definition>
      */
-    private $usedDefinitions = [];
+    private array $usedDefinitions = [];
 
     public function __construct(
         DefinitionFinder $definitionFinder,

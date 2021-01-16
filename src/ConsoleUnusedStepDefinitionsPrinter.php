@@ -11,10 +11,7 @@ use function sprintf;
 
 final class ConsoleUnusedStepDefinitionsPrinter implements UnusedStepDefinitionsPrinter
 {
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
     public function __construct(OutputInterface $output)
     {
