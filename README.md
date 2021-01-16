@@ -5,7 +5,7 @@ contexts for unused step definitions?
 This Behat extension detects and reports step definitions that are not being
 used in any of your `*.feature` files.
 
-[![Build Status](https://travis-ci.com/nicwortel/behat-unused-step-definitions-extension.svg?branch=master)](https://travis-ci.com/nicwortel/behat-unused-step-definitions-extension)
+[![Build status](https://img.shields.io/github/workflow/status/nicwortel/behat-unused-step-definitions-extension/CI)](https://github.com/nicwortel/behat-unused-step-definitions-extension/actions)
 [![License](https://img.shields.io/github/license/nicwortel/behat-unused-step-definitions-extension)](https://github.com/nicwortel/behat-unused-step-definitions-extension/blob/master/LICENSE.txt)
 [![Required PHP version](https://img.shields.io/packagist/php-v/nicwortel/behat-unused-step-definitions-extension)](https://github.com/nicwortel/behat-unused-step-definitions-extension/blob/master/composer.json)
 [![Current version](https://img.shields.io/packagist/v/nicwortel/behat-unused-step-definitions-extension)](https://packagist.org/packages/nicwortel/behat-unused-step-definitions-extension)
