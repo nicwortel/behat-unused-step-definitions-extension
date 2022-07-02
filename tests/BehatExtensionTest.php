@@ -36,4 +36,26 @@ class BehatExtensionTest extends TestCase
             $behat->getOutput()
         );
     }
+
+    public function testCustomPrinter(): void
+    {
+        $behat = new Process(['../../vendor/bin/behat', '--config', 'behat_extended.yml'], __DIR__ . '/fixtures/');
+        $behat->mustRun();
+
+        $outputFile = sys_get_temp_dir() . '/unused_step_defs.txt';
+        $this->assertFileExists($outputFile);
+        $fileContents = file_get_contents($outputFile);
+        $this->assertStringContainsString(
+            'Given some precondition that is never used in a feature # FeatureContext::somePrecondition()',
+            $fileContents
+        );
+        $this->assertStringContainsString(
+            'Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()',
+            $fileContents
+        );
+        $this->assertStringNotContainsString(
+            'When some action by the actor # FeatureContext::someActionByTheActor()',
+            $fileContents
+        );
+    }
 }
