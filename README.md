@@ -41,12 +41,12 @@ listed per suite after the suite has finished.
 
 ### Filtering the results
 
-There projects when its important to avoid some step definitions to be detected.
-For instance, when a project wants to avoid scanning unused step definitions
-from the third-party packages/libraries and show only results from the custom
-code. The extension allows to configure a _regular expression_ filter in the
-`behat.yml` configuration file. The filter will only allow definitions whose
-context class name satisfies the regular expression:
+There are projects where it's important to avoid some step definitions to be
+detected. For instance, when a project wants to avoid scanning unused step
+definitions from the third-party packages/libraries and show only results from
+the custom code. The extension allows to configure a _regular expression_ filter
+in the `behat.yml` configuration file. The filter will only allow definitions
+whose context class name satisfies the regular expression:
 
 ```yaml
 default:
