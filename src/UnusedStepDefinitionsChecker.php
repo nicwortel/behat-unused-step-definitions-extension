@@ -76,7 +76,7 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
         if ($this->filter) {
             $unusedDefinitions = array_filter($unusedDefinitions, function (Definition $definition): bool
             {
-               return (bool) preg_match($this->filter, $definition->getPath());
+               return (bool) preg_match((string) $this->filter, $definition->getPath());
             });
         }
 
