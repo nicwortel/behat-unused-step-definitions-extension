@@ -1,12 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NicWortel\BehatUnusedStepDefinitionsExtension\Tests;
 
 use NicWortel\BehatUnusedStepDefinitionsExtension\UnusedStepDefinitionsPrinter;
 
-class TestingPrinter implements  UnusedStepDefinitionsPrinter
+use function file_put_contents;
+use function sprintf;
+use function sys_get_temp_dir;
+
+use const FILE_APPEND;
+
+class TestingPrinter implements UnusedStepDefinitionsPrinter
 {
-    public function printUnusedStepDefinitions(array $unusedDefinitions): void {
+    /**
+     * @inheritDoc
+     */
+    public function printUnusedStepDefinitions(array $unusedDefinitions): void
+    {
         $outputFile = sys_get_temp_dir() . '/unused_step_defs.txt';
         foreach ($unusedDefinitions as $unusedDefinition) {
             file_put_contents(

@@ -7,6 +7,9 @@ namespace NicWortel\BehatUnusedStepDefinitionsExtension\Tests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
 
+use function file_get_contents;
+use function sys_get_temp_dir;
+
 class BehatExtensionTest extends TestCase
 {
     public function testPrintsUnusedStepDefinitions(): void
