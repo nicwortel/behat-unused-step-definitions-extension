@@ -37,7 +37,7 @@ final class Extension implements BehatExtension
     }
 
     /**
-     * @param array<mixed> $config
+     * @param array{printer: string} $config
      */
     public function load(ContainerBuilder $container, array $config): void
     {
@@ -46,7 +46,7 @@ final class Extension implements BehatExtension
             [
                 new Reference(DefinitionExtension::FINDER_ID),
                 new Reference(DefinitionExtension::REPOSITORY_ID),
-                new Reference((string) $config['printer']),
+                new Reference($config['printer']),
             ]
         );
         $serviceDefinition->addTag(EventDispatcherExtension::SUBSCRIBER_TAG);
