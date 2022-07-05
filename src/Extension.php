@@ -33,6 +33,7 @@ final class Extension implements BehatExtension
     {
         $builder->children()
             ->scalarNode('printer')->defaultValue('unused_step_definitions_printer')->end()
+            ->scalarNode('filter')->end()
         ->end();
     }
 
@@ -47,6 +48,7 @@ final class Extension implements BehatExtension
                 new Reference(DefinitionExtension::FINDER_ID),
                 new Reference(DefinitionExtension::REPOSITORY_ID),
                 new Reference($config['printer']),
+                $config['filter'] ?? null
             ]
         );
         $serviceDefinition->addTag(EventDispatcherExtension::SUBSCRIBER_TAG);

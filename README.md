@@ -39,6 +39,26 @@ vendor/bin/behat --dry-run
 Note that if you have multiple suites, the unused step definitions will be
 listed per suite after the suite has finished.
 
+### Filtering the results
+
+There projects when its important to avoid some step definitions to be detected.
+For instance, when a project wants to avoid scanning unused step definitions
+from the third-party packages/libraries and show only results from the custom
+code. The extension allows to configure a _regular expression_ filter in the
+`behat.yml` configuration file. The filter will only allow definitions whose
+context class name satisfies the regular expression:
+
+```yaml
+default:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
+filter: '#\\MyProject\\Behat\\Contexts#'
+```
+
+In this example only unused step definitions from classes with the namespace
+containing `\MyProject\Behat\Contexts` will be outputted.
+
+
 ## Extending
 
 By default, the extension uses the `unused_step_definitions_printer` printer,
@@ -55,4 +75,3 @@ default:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
       printer: my_custom_printer
-```
