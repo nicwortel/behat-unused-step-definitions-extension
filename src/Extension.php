@@ -48,7 +48,7 @@ final class Extension implements BehatExtension
                 new Reference(DefinitionExtension::FINDER_ID),
                 new Reference(DefinitionExtension::REPOSITORY_ID),
                 new Reference($config['printer']),
-                $config['filter'] ?? null
+                $config['filter'] ?? null,
             ]
         );
         $serviceDefinition->addTag(EventDispatcherExtension::SUBSCRIBER_TAG);
