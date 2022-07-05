@@ -75,3 +75,4 @@ default:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
       printer: my_custom_printer
+```
