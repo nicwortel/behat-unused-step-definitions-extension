@@ -31,10 +31,13 @@ final class Extension implements BehatExtension
 
     public function configure(ArrayNodeDefinition $builder): void
     {
+        $builder->children()
+            ->scalarNode('printer')->defaultValue('unused_step_definitions_printer')->end()
+        ->end();
     }
 
     /**
-     * @param array<mixed> $config
+     * @param array{printer: string} $config
      */
     public function load(ContainerBuilder $container, array $config): void
     {
@@ -43,7 +46,7 @@ final class Extension implements BehatExtension
             [
                 new Reference(DefinitionExtension::FINDER_ID),
                 new Reference(DefinitionExtension::REPOSITORY_ID),
-                new Reference('unused_step_definitions_printer'),
+                new Reference($config['printer']),
             ]
         );
         $serviceDefinition->addTag(EventDispatcherExtension::SUBSCRIBER_TAG);

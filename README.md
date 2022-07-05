@@ -38,3 +38,21 @@ vendor/bin/behat --dry-run
 
 Note that if you have multiple suites, the unused step definitions will be
 listed per suite after the suite has finished.
+
+## Extending
+
+By default, the extension uses the `unused_step_definitions_printer` printer,
+shipped in the package. The printer displays the list of unused step definitions
+in the console. Third-party Behat extension might provide different printers
+(e.g. one may build a text file with the list of unused step definitions). A
+custom printer should be defined as a container service and should implement the
+`\NicWortel\BehatUnusedStepDefinitionsExtension\UnusedStepDefinitionsPrinter`
+interface. Using a custom printer is possible by providing its service ID in the
+`behat.yml` configuration file:
+
+```yaml
+default:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
+      printer: my_custom_printer
+```
