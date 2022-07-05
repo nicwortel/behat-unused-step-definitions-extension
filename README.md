@@ -52,7 +52,7 @@ whose context class name satisfies the regular expression:
 default:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
-filter: '#\\MyProject\\Behat\\Contexts#'
+      filter: '#\\MyProject\\Behat\\Contexts#'
 ```
 
 In this example only unused step definitions from classes with the namespace
