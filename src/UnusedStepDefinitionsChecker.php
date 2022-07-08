@@ -12,6 +12,8 @@ use Behat\Testwork\EventDispatcher\Event\AfterSuiteTested;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use function array_diff;
+use function array_filter;
+use function preg_match;
 
 final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
 {
@@ -21,6 +23,8 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
 
     private UnusedStepDefinitionsPrinter $printer;
 
+    private ?string $filter;
+
     /**
      * @var array<Definition>
      */
@@ -29,11 +33,13 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
     public function __construct(
         DefinitionFinder $definitionFinder,
         DefinitionRepository $definitionRepository,
-        UnusedStepDefinitionsPrinter $printer
+        UnusedStepDefinitionsPrinter $printer,
+        ?string $filter
     ) {
         $this->definitionFinder = $definitionFinder;
         $this->definitionRepository = $definitionRepository;
         $this->printer = $printer;
+        $this->filter = $filter;
     }
 
     /**
@@ -68,6 +74,12 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
 
         /** @var Definition[] $unusedDefinitions */
         $unusedDefinitions = array_diff($definitions, $this->usedDefinitions);
+
+        if ($this->filter) {
+            $unusedDefinitions = array_filter($unusedDefinitions, function (Definition $definition): bool {
+                return (bool) preg_match((string) $this->filter, $definition->getPath());
+            });
+        }
 
         $this->printer->printUnusedStepDefinitions($unusedDefinitions);
     }

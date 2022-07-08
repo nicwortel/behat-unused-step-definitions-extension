@@ -61,4 +61,26 @@ class BehatExtensionTest extends TestCase
             $fileContents
         );
     }
+
+    public function testWithFilter(): void
+    {
+        $behat = new Process(['../../vendor/bin/behat', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
+        $behat->mustRun();
+
+        $this->assertStringContainsString('1 unused step definitions:', $behat->getOutput());
+
+        $this->assertStringNotContainsString(
+            'Given some precondition that is never used in a feature # FeatureContext::somePrecondition()',
+            $behat->getOutput()
+        );
+        $this->assertStringNotContainsString(
+            'When some action by the actor # FeatureContext::someActionByTheActor()',
+            $behat->getOutput()
+        );
+        // Only this step definition is passing the filter.
+        $this->assertStringContainsString(
+            'Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()',
+            $behat->getOutput()
+        );
+    }
 }
