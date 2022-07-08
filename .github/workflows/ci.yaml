@@ -13,12 +13,11 @@ jobs:
     strategy:
       matrix:
         php:
-          - '7.4'
           - '8.0'
         dependencies:
           - highest
         include:
-          - php: '7.4'
+          - php: '8.0'
             dependencies: lowest
     steps:
       - name: Checkout source code
