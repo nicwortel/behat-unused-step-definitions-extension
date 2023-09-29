@@ -1,4 +1,4 @@
 /vendor/
 /.phpcs-cache
-/.phpunit.result.cache
+/.phpunit.cache
 /composer.lock
