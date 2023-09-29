@@ -17,29 +17,17 @@ use function preg_match;
 
 final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
 {
-    private DefinitionFinder $definitionFinder;
-
-    private DefinitionRepository $definitionRepository;
-
-    private UnusedStepDefinitionsPrinter $printer;
-
-    private ?string $filter;
-
     /**
      * @var array<Definition>
      */
     private array $usedDefinitions = [];
 
     public function __construct(
-        DefinitionFinder $definitionFinder,
-        DefinitionRepository $definitionRepository,
-        UnusedStepDefinitionsPrinter $printer,
-        ?string $filter
+        private readonly DefinitionFinder $definitionFinder,
+        private readonly DefinitionRepository $definitionRepository,
+        private readonly UnusedStepDefinitionsPrinter $printer,
+        private readonly ?string $filter
     ) {
-        $this->definitionFinder = $definitionFinder;
-        $this->definitionRepository = $definitionRepository;
-        $this->printer = $printer;
-        $this->filter = $filter;
     }
 
     /**
@@ -76,9 +64,10 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
         $unusedDefinitions = array_diff($definitions, $this->usedDefinitions);
 
         if ($this->filter) {
-            $unusedDefinitions = array_filter($unusedDefinitions, function (Definition $definition): bool {
-                return (bool) preg_match((string) $this->filter, $definition->getPath());
-            });
+            $unusedDefinitions = array_filter(
+                $unusedDefinitions,
+                fn(Definition $definition): bool => (bool) preg_match((string) $this->filter, $definition->getPath())
+            );
         }
 
         $this->printer->printUnusedStepDefinitions($unusedDefinitions);

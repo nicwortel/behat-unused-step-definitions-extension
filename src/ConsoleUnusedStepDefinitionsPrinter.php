@@ -11,11 +11,8 @@ use function sprintf;
 
 final class ConsoleUnusedStepDefinitionsPrinter implements UnusedStepDefinitionsPrinter
 {
-    private OutputInterface $output;
-
-    public function __construct(OutputInterface $output)
+    public function __construct(private readonly OutputInterface $output)
     {
-        $this->output = $output;
     }
 
     /**
@@ -23,7 +20,7 @@ final class ConsoleUnusedStepDefinitionsPrinter implements UnusedStepDefinitions
      */
     public function printUnusedStepDefinitions(array $unusedDefinitions): void
     {
-        if (count($unusedDefinitions) === 0) {
+        if ($unusedDefinitions === []) {
             return;
         }
 
