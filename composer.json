@@ -15,7 +15,7 @@
         "phpunit/phpunit": "^10.3",
         "slevomat/coding-standard": ">=6.3.11",
         "squizlabs/php_codesniffer": "^3.5",
-        "symfony/process": "^5.0 || ^6.0"
+        "symfony/process": "^6.0"
     },
     "config": {
         "sort-packages": true,
