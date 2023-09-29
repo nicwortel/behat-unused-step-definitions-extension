@@ -15,7 +15,7 @@
         "phpunit/phpunit": "^10.3",
         "rector/rector": "^0.18.4",
         "slevomat/coding-standard": ">=6.3.11",
-        "squizlabs/php_codesniffer": "^3.5",
+        "squizlabs/php_codesniffer": "^3.6",
         "symfony/process": "^6.0"
     },
     "config": {
