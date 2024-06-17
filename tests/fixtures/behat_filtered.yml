@@ -1,4 +1,29 @@
-default:
+include:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
-      filter: /someStepThatIsNeverUsedByAFeature/
+      filters:
+        include:
+          - 'someStepThatIsNeverUsedByAFeature'
+
+include_inheritance:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
+      filters:
+        include:
+          - 'FeatureContext::'
+
+exclude:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
+      filters:
+        exclude:
+          - 'someStepThatIsNeverUsedByAFeature'
+
+include_exclude:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
+      filters:
+        include:
+          - 'FeatureContext::'
+        exclude:
+          - 'someStepThatIsNeverUsedByAFeature'

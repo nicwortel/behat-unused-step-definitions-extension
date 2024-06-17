@@ -43,15 +43,23 @@ listed per suite after the suite has finished.
 There are projects where it's important to avoid some step definitions to be
 detected. For instance, when a project wants to avoid scanning unused step
 definitions from the third-party packages/libraries and show only results from
-the custom code. The extension allows to configure a _regular expression_ filter
-in the `behat.yml` configuration file. The filter will only allow definitions
-whose context class name satisfies the regular expression:
+the custom code. The extension allows to configure a list of
+_regular expressions_ to include or exclude step definitions in the `behat.yml`
+configuration file. Expressions are compared to step definitions reference path
+(`ClassName::methodName`):
 
 ```yaml
 default:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
-      filter: '#\\MyProject\\Behat\\Contexts#'
+      filters:
+        include:
+          - 'MyProject\\Behat\\Contexts'
+          - 'OtherProject\\Behat\\(Foo|Bar)Context'
+        exclude:
+          - 'MyProject\\Behat\\Contexts\\FeatureContext'
+          - '::excludedMethod'
+          - 'OtherProject\\Behat\\FooContext::.*Method'
 ```
 
 In this example only unused step definitions from classes with the namespace

@@ -13,6 +13,11 @@
     <file>tests/</file>
 
     <exclude-pattern>tests/fixtures/features/bootstrap/FeatureContext.php</exclude-pattern>
+    <exclude-pattern>tests/fixtures/features/bootstrap/FeatureContextBase.php</exclude-pattern>
 
     <rule ref="NicWortel"/>
+    <rule ref="Generic.Files.LineLength.TooLong">
+      <exclude-pattern>tests/BehatExtensionTest.php</exclude-pattern>
+    </rule>
+
 </ruleset>

@@ -9,6 +9,9 @@ use Symfony\Component\Process\Process;
 
 use function file_get_contents;
 use function sys_get_temp_dir;
+use function unlink;
+
+use const PHP_EOL;
 
 class BehatExtensionTest extends TestCase
 {
@@ -17,27 +20,13 @@ class BehatExtensionTest extends TestCase
         $behat = new Process(['../../vendor/bin/behat', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
         $behat->mustRun();
 
-        $this->assertStringContainsString('2 unused step definitions:', $behat->getOutput());
-
-        $this->assertStringContainsString(
-            'Given some precondition that is never used in a feature # FeatureContext::somePrecondition()',
-            $behat->getOutput()
-        );
-        $this->assertStringContainsString(
-            'Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()',
-            $behat->getOutput()
-        );
-    }
-
-    public function testDoesNotPrintStepDefinitionsThatAreUsed(): void
-    {
-        $behat = new Process(['../../vendor/bin/behat', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
-        $behat->mustRun();
-
-        $this->assertStringNotContainsString(
-            'When some action by the actor # FeatureContext::someActionByTheActor()',
-            $behat->getOutput()
-        );
+        $expected = <<<EOF
+3 unused step definitions:
+ - Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
+ - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
+ - Then some step defined in the base class that is never used by a feature # FeatureContext::someBaseClassStepThatIsNeverUsedByAFeature()
+EOF;
+        $this->assertStringContainsString($expected, $behat->getOutput());
     }
 
     public function testCustomPrinter(): void
@@ -48,39 +37,63 @@ class BehatExtensionTest extends TestCase
         $outputFile = sys_get_temp_dir() . '/unused_step_defs.txt';
         $this->assertFileExists($outputFile);
         $fileContents = file_get_contents($outputFile);
-        $this->assertStringContainsString(
-            'Given some precondition that is never used in a feature # FeatureContext::somePrecondition()',
-            $fileContents
-        );
-        $this->assertStringContainsString(
-            'Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()',
-            $fileContents
-        );
-        $this->assertStringNotContainsString(
-            'When some action by the actor # FeatureContext::someActionByTheActor()',
-            $fileContents
-        );
+        unlink($outputFile);
+
+        $expected = <<<EOF
+Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
+Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
+Then some step defined in the base class that is never used by a feature # FeatureContext::someBaseClassStepThatIsNeverUsedByAFeature()
+EOF;
+        $this->assertEquals($expected . PHP_EOL, $fileContents);
     }
 
-    public function testWithFilter(): void
+    public function testFilterInclude(): void
     {
-        $behat = new Process(['../../vendor/bin/behat', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
+        $behat = new Process(['../../vendor/bin/behat', '--profile', 'include', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
         $behat->mustRun();
 
-        $this->assertStringContainsString('1 unused step definitions:', $behat->getOutput());
+        $expected = <<<EOF
+1 unused step definitions:
+ - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
+EOF;
+        $this->assertStringContainsString($expected, $behat->getOutput());
+    }
 
-        $this->assertStringNotContainsString(
-            'Given some precondition that is never used in a feature # FeatureContext::somePrecondition()',
-            $behat->getOutput()
-        );
-        $this->assertStringNotContainsString(
-            'When some action by the actor # FeatureContext::someActionByTheActor()',
-            $behat->getOutput()
-        );
-        // Only this step definition is passing the filter.
-        $this->assertStringContainsString(
-            'Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()',
-            $behat->getOutput()
-        );
+    public function testFilterIncludeInheritance(): void
+    {
+        $behat = new Process(['../../vendor/bin/behat', '--profile', 'include_inheritance', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
+        $behat->mustRun();
+
+        $expected = <<<EOF
+2 unused step definitions:
+ - Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
+ - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
+EOF;
+        $this->assertStringContainsString($expected, $behat->getOutput());
+    }
+
+    public function testFilterExclude(): void
+    {
+        $behat = new Process(['../../vendor/bin/behat', '--profile', 'exclude', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
+        $behat->mustRun();
+
+        $expected = <<<EOF
+2 unused step definitions:
+ - Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
+ - Then some step defined in the base class that is never used by a feature # FeatureContext::someBaseClassStepThatIsNeverUsedByAFeature()
+EOF;
+        $this->assertStringContainsString($expected, $behat->getOutput());
+    }
+
+    public function testFilterIncludeExclude(): void
+    {
+        $behat = new Process(['../../vendor/bin/behat', '--profile', 'include_exclude', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
+        $behat->mustRun();
+
+        $expected = <<<EOF
+1 unused step definitions:
+ - Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
+EOF;
+        $this->assertStringContainsString($expected, $behat->getOutput());
     }
 }
