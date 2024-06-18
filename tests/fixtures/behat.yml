@@ -1,3 +1,15 @@
 default:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension: {}
+
+custom_printer:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
+      printer: testing_printer
+    NicWortel\BehatUnusedStepDefinitionsExtension\Tests\TestingBehatExtension: ~
+
+ignore_pattern_aliases:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
+      ignorePatternAliases: true
+      

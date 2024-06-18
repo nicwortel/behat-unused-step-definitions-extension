@@ -32,12 +32,27 @@ final class Extension implements BehatExtension
     public function configure(ArrayNodeDefinition $builder): void
     {
         $builder->children()
-            ->scalarNode('printer')->defaultValue('unused_step_definitions_printer')->end()
+            ->scalarNode('printer')
+                ->defaultValue('unused_step_definitions_printer')
+            ->end()
+            ->booleanNode('ignorePatternAliases')
+                ->defaultFalse()
+            ->end()
             ->arrayNode('filters')
                 ->info('Specifies include/exclude filters')
-                ->defaultValue([])
-                ->useAttributeAsKey('name')
-                ->prototype('variable')->end()
+                ->performNoDeepMerging()
+                ->children()
+                    ->arrayNode('include')
+                        ->defaultValue([])
+                        ->useAttributeAsKey('name')
+                        ->prototype('variable')->end()
+                    ->end()
+                    ->arrayNode('exclude')
+                        ->defaultValue([])
+                        ->useAttributeAsKey('name')
+                        ->prototype('variable')->end()
+                    ->end()
+                ->end()
             ->end()
         ->end();
     }
@@ -53,6 +68,7 @@ final class Extension implements BehatExtension
                 new Reference(DefinitionExtension::FINDER_ID),
                 new Reference(DefinitionExtension::REPOSITORY_ID),
                 new Reference($config['printer']),
+                $config['ignorePatternAliases'],
                 $config['filters'] ?? null,
             ]
         );

@@ -17,7 +17,7 @@ class BehatExtensionTest extends TestCase
 {
     public function testPrintsUnusedStepDefinitions(): void
     {
-        $behat = new Process(['../../vendor/bin/behat', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
+        $behat = new Process(['../../vendor/bin/behat', '--profile', 'default', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
         $behat->mustRun();
 
         $expected = <<<EOF
@@ -29,9 +29,22 @@ EOF;
         $this->assertStringContainsString($expected, $behat->getOutput());
     }
 
+    public function testIgnorePatternAliases(): void
+    {
+        $behat = new Process(['../../vendor/bin/behat', '--profile', 'ignore_pattern_aliases', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
+        $behat->mustRun();
+
+        $expected = <<<EOF
+2 unused step definitions:
+ - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
+ - Then some step defined in the base class that is never used by a feature # FeatureContext::someBaseClassStepThatIsNeverUsedByAFeature()
+EOF;
+        $this->assertStringContainsString($expected, $behat->getOutput());
+    }
+
     public function testCustomPrinter(): void
     {
-        $behat = new Process(['../../vendor/bin/behat', '--config', 'behat_extended.yml'], __DIR__ . '/fixtures/');
+        $behat = new Process(['../../vendor/bin/behat', '--profile', 'custom_printer', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
         $behat->mustRun();
 
         $outputFile = sys_get_temp_dir() . '/unused_step_defs.txt';

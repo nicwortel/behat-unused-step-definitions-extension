@@ -30,7 +30,8 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
         private readonly DefinitionFinder $definitionFinder,
         private readonly DefinitionRepository $definitionRepository,
         private readonly UnusedStepDefinitionsPrinter $printer,
-        private readonly ?array $filters
+        private readonly bool $ignorePatternAliases,
+        private readonly ?array $filters,
     ) {
     }
 
@@ -67,25 +68,51 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
         /** @var Definition[] $unusedDefinitions */
         $unusedDefinitions = array_diff($definitions, $this->usedDefinitions);
 
+        if ($this->ignorePatternAliases) {
+            $unusedDefinitions = $this->filterPatternAliases($unusedDefinitions);
+        }
+
         if ($this->filters) {
-            $unusedDefinitions = array_filter($unusedDefinitions, [$this, 'matchFilters']);
+            $unusedDefinitions = $this->filterIncludeExclude($unusedDefinitions);
         }
 
         $this->printer->printUnusedStepDefinitions($unusedDefinitions);
     }
 
-    private function matchFilters(Definition $definition): bool
+    /**
+     * @param Definition[] $unusedDefinitions
+     * @return Definition[]
+     */
+    private function filterPatternAliases(array $unusedDefinitions): array
     {
-        // Get the concrete path reference for this definition.
-        $path = $this->getConcretePath($definition->getReflection());
+        $usedPaths = [];
+        foreach ($this->usedDefinitions as $def) {
+            $usedPaths[$def->getPath()] = true;
+        }
 
-        $include = $this->filters['include'] ?? null;
-        $match_include = !empty($include) ? $this->patternsMatch($path, $include) : true;
+        return array_filter($unusedDefinitions, function (Definition $definition) use ($usedPaths) {
+            return !isset($usedPaths[$definition->getPath()]);
+        });
+    }
 
-        $exclude = $this->filters['exclude'] ?? null;
-        $match_exclude = !empty($exclude) ? $this->patternsMatch($path, $exclude) : false;
+    /**
+     * @param Definition[] $unusedDefinitions
+     * @return Definition[]
+     */
+    private function filterIncludeExclude(array $unusedDefinitions): array
+    {
+        return array_filter($unusedDefinitions, function (Definition $definition) {
+            // Get the concrete path reference for this definition.
+            $path = $this->getConcretePath($definition->getReflection());
 
-        return $match_include && !$match_exclude;
+            $include = $this->filters['include'] ?? null;
+            $match_include = !empty($include) ? $this->patternsMatch($path, $include) : true;
+
+            $exclude = $this->filters['exclude'] ?? null;
+            $match_exclude = !empty($exclude) ? $this->patternsMatch($path, $exclude) : false;
+
+            return $match_include && !$match_exclude;
+        });
     }
 
     /**

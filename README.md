@@ -40,13 +40,15 @@ listed per suite after the suite has finished.
 
 ### Filtering the results
 
+#### Include / exclude
+
 There are projects where it's important to avoid some step definitions to be
 detected. For instance, when a project wants to avoid scanning unused step
 definitions from the third-party packages/libraries and show only results from
 the custom code. The extension allows to configure a list of
 _regular expressions_ to include or exclude step definitions in the `behat.yml`
-configuration file. Expressions are compared to step definitions reference path
-(`ClassName::methodName`):
+configuration file. Expressions are compared against the FQCN + method name
+(`My\Namespace\ClassName::methodName`):
 
 ```yaml
 default:
@@ -59,12 +61,31 @@ default:
         exclude:
           - 'MyProject\\Behat\\Contexts\\FeatureContext'
           - '::excludedMethod'
-          - 'OtherProject\\Behat\\FooContext::.*Method'
+          - 'OtherProject\\Behat\\FooContext::.+Method'
 ```
 
-In this example only unused step definitions from classes with the namespace
-containing `\MyProject\Behat\Contexts` will be outputted.
+#### Ignore pattern aliases
 
+Example:
+```php
+/**
+ * @Then I take a screenshot
+ * @Then I take a screenshot :name
+ */
+public function takeScreenshot(?string $name = NULL): void {
+  // Step implementation.
+}
+```
+If `I take a screenshot` is used but `I take a screenshot :name` is not,
+enabling `ignorePatternAliases: true` will prevent the latter from being
+reported as unused.
+
+```yaml
+default:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
+      ignorePatternAliases: true
+```
 
 ## Extending
 
