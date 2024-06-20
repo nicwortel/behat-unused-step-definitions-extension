@@ -56,12 +56,12 @@ default:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
       filters:
         include:
-          - 'MyProject\\Behat\\Contexts'
-          - 'OtherProject\\Behat\\(Foo|Bar)Context'
+          - '/MyProject\\Behat\\Contexts/'
+          - '/OtherProject\\Behat\\(Foo|Bar)Context/'
         exclude:
-          - 'MyProject\\Behat\\Contexts\\FeatureContext'
-          - '::excludedMethod'
-          - 'OtherProject\\Behat\\FooContext::.+Method'
+          - '/MyProject\\Behat\\Contexts\\FeatureContext/'
+          - '/::excludedMethod/'
+          - '/OtherProject\\Behat\\FooContext::.+Method/'
 ```
 
 #### Ignore pattern aliases

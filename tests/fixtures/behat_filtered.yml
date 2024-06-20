@@ -3,27 +3,32 @@ include:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
       filters:
         include:
-          - 'someStepThatIsNeverUsedByAFeature'
+          - '/someStepThatIsNeverUsedByAFeature/'
+            
+include_bc:
+  extensions:
+    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
+      filter: '/someStepThatIsNeverUsedByAFeature/'
 
 include_inheritance:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
       filters:
         include:
-          - 'FeatureContext::'
+          - '/FeatureContext::/'
 
 exclude:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
       filters:
         exclude:
-          - 'someStepThatIsNeverUsedByAFeature'
+          - '/someStepThatIsNeverUsedByAFeature/'
 
 include_exclude:
   extensions:
     NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
       filters:
         include:
-          - 'FeatureContext::'
+          - '/FeatureContext::/'
         exclude:
-          - 'someStepThatIsNeverUsedByAFeature'
+          - '/someStepThatIsNeverUsedByAFeature/'

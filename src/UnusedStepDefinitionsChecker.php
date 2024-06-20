@@ -15,7 +15,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use function array_diff;
 use function array_filter;
-use function implode;
 use function preg_match;
 use function sprintf;
 
@@ -105,23 +104,27 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
             // Get the concrete path reference for this definition.
             $path = $this->getConcretePath($definition->getReflection());
 
-            $include = $this->filters['include'] ?? null;
-            $match_include = !empty($include) ? $this->patternsMatch($path, $include) : true;
+            $includePatterns = $this->filters['include'] ?? null;
+            $includeMatch = $includePatterns ? $this->matchesPatterns($path, $includePatterns) : true;
 
-            $exclude = $this->filters['exclude'] ?? null;
-            $match_exclude = !empty($exclude) ? $this->patternsMatch($path, $exclude) : false;
+            $excludePatterns = $this->filters['exclude'] ?? null;
+            $excludeMatch = $excludePatterns ? $this->matchesPatterns($path, $excludePatterns) : false;
 
-            return $match_include && !$match_exclude;
+            return $includeMatch && !$excludeMatch;
         });
     }
 
     /**
      * @param string[] $patterns
      */
-    private function patternsMatch(string $path, array $patterns): bool
+    private function matchesPatterns(string $path, array $patterns): bool
     {
-        $pattern = '/' . implode('|', $patterns) . '/';
-        return (bool) preg_match($pattern, $path);
+        foreach ($patterns as $pattern) {
+            if ((bool) preg_match($pattern, $path)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function getConcretePath(ReflectionFunctionAbstract $function): string

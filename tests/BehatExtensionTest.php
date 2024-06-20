@@ -72,6 +72,18 @@ EOF;
         $this->assertStringContainsString($expected, $behat->getOutput());
     }
 
+    public function testFilterIncludeBC(): void
+    {
+        $behat = new Process(['../../vendor/bin/behat', '--profile', 'include_bc', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
+        $behat->mustRun();
+
+        $expected = <<<EOF
+1 unused step definitions:
+ - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
+EOF;
+        $this->assertStringContainsString($expected, $behat->getOutput());
+    }
+
     public function testFilterIncludeInheritance(): void
     {
         $behat = new Process(['../../vendor/bin/behat', '--profile', 'include_inheritance', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
