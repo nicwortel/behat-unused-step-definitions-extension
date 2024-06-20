@@ -33,7 +33,7 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
         private readonly DefinitionRepository $definitionRepository,
         private readonly UnusedStepDefinitionsPrinter $printer,
         private readonly bool $ignorePatternAliases,
-        private readonly ?array $filters,
+        private readonly ?array $filters
     ) {
     }
 
