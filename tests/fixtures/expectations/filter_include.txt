@@ -1,0 +1,2 @@
+1 unused step definitions:
+ - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()

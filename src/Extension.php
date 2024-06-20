@@ -65,7 +65,12 @@ final class Extension implements BehatExtension
     }
 
     /**
-     * @param array{printer: string, filter: ?string} $config
+     * @param array{
+     *     printer: string,
+     *     filter: ?string,
+     *     filters: array{include: string[], exclude: string[]}|null,
+     *     ignorePatternAliases: bool
+     * } $config
      */
     public function load(ContainerBuilder $container, array $config): void
     {

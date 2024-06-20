@@ -25,6 +25,9 @@ final class UnusedStepDefinitionsChecker implements EventSubscriberInterface
      */
     private array $usedDefinitions = [];
 
+    /**
+     * @param array{include: string[], exclude: string[]}|null $filters
+     */
     public function __construct(
         private readonly DefinitionFinder $definitionFinder,
         private readonly DefinitionRepository $definitionRepository,

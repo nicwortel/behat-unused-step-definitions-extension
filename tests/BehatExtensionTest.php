@@ -11,114 +11,51 @@ use function file_get_contents;
 use function sys_get_temp_dir;
 use function unlink;
 
-use const PHP_EOL;
-
 class BehatExtensionTest extends TestCase
 {
-    public function testPrintsUnusedStepDefinitions(): void
+    /**
+     * @return array<array{0: string}>
+     */
+    public static function behatProfilesProvider(): array
     {
-        $behat = new Process(['../../vendor/bin/behat', '--profile', 'default', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
-        $behat->mustRun();
-
-        $expected = <<<EOF
-3 unused step definitions:
- - Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
- - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
- - Then some step defined in the base class that is never used by a feature # FeatureContext::someBaseClassStepThatIsNeverUsedByAFeature()
-EOF;
-        $this->assertStringContainsString($expected, $behat->getOutput());
+        return [
+          ['default'],
+          ['ignore_pattern_aliases'],
+          ['filter_bc'],
+          ['filter_inheritance'],
+          ['filter_include'],
+          ['filter_exclude'],
+          ['filter_include_exclude'],
+        ];
     }
 
-    public function testIgnorePatternAliases(): void
+    /**
+     * @dataProvider behatProfilesProvider
+     */
+    public function testBehatProfiles(string $profile): void
     {
-        $behat = new Process(['../../vendor/bin/behat', '--profile', 'ignore_pattern_aliases', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
-        $behat->mustRun();
-
-        $expected = <<<EOF
-2 unused step definitions:
- - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
- - Then some step defined in the base class that is never used by a feature # FeatureContext::someBaseClassStepThatIsNeverUsedByAFeature()
-EOF;
-        $this->assertStringContainsString($expected, $behat->getOutput());
+        $actual = $this->runBehat($profile);
+        $expected = file_get_contents(__DIR__ . "/fixtures/expectations/$profile.txt");
+        $this->assertStringContainsString($expected, $actual);
     }
 
     public function testCustomPrinter(): void
     {
-        $behat = new Process(['../../vendor/bin/behat', '--profile', 'custom_printer', '--config', 'behat.yml'], __DIR__ . '/fixtures/');
-        $behat->mustRun();
-
+        $profile = 'custom_printer';
         $outputFile = sys_get_temp_dir() . '/unused_step_defs.txt';
+        $this->runBehat($profile);
+
         $this->assertFileExists($outputFile);
-        $fileContents = file_get_contents($outputFile);
+        $actual = file_get_contents($outputFile);
         unlink($outputFile);
 
-        $expected = <<<EOF
-Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
-Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
-Then some step defined in the base class that is never used by a feature # FeatureContext::someBaseClassStepThatIsNeverUsedByAFeature()
-EOF;
-        $this->assertEquals($expected . PHP_EOL, $fileContents);
+        $expected = file_get_contents(__DIR__ . "/fixtures/expectations/$profile.txt");
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testFilterInclude(): void
+    private function runBehat(string $profile): string
     {
-        $behat = new Process(['../../vendor/bin/behat', '--profile', 'include', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
-        $behat->mustRun();
-
-        $expected = <<<EOF
-1 unused step definitions:
- - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
-EOF;
-        $this->assertStringContainsString($expected, $behat->getOutput());
-    }
-
-    public function testFilterIncludeBC(): void
-    {
-        $behat = new Process(['../../vendor/bin/behat', '--profile', 'include_bc', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
-        $behat->mustRun();
-
-        $expected = <<<EOF
-1 unused step definitions:
- - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
-EOF;
-        $this->assertStringContainsString($expected, $behat->getOutput());
-    }
-
-    public function testFilterIncludeInheritance(): void
-    {
-        $behat = new Process(['../../vendor/bin/behat', '--profile', 'include_inheritance', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
-        $behat->mustRun();
-
-        $expected = <<<EOF
-2 unused step definitions:
- - Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
- - Then some step that is never used by a feature # FeatureContext::someStepThatIsNeverUsedByAFeature()
-EOF;
-        $this->assertStringContainsString($expected, $behat->getOutput());
-    }
-
-    public function testFilterExclude(): void
-    {
-        $behat = new Process(['../../vendor/bin/behat', '--profile', 'exclude', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
-        $behat->mustRun();
-
-        $expected = <<<EOF
-2 unused step definitions:
- - Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
- - Then some step defined in the base class that is never used by a feature # FeatureContext::someBaseClassStepThatIsNeverUsedByAFeature()
-EOF;
-        $this->assertStringContainsString($expected, $behat->getOutput());
-    }
-
-    public function testFilterIncludeExclude(): void
-    {
-        $behat = new Process(['../../vendor/bin/behat', '--profile', 'include_exclude', '--config', 'behat_filtered.yml'], __DIR__ . '/fixtures/');
-        $behat->mustRun();
-
-        $expected = <<<EOF
-1 unused step definitions:
- - Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
-EOF;
-        $this->assertStringContainsString($expected, $behat->getOutput());
+          $behat = new Process(['../../vendor/bin/behat', '--profile', $profile], __DIR__ . '/fixtures/');
+          return $behat->mustRun()->getOutput();
     }
 }
