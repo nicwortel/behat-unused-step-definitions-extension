@@ -1,0 +1,3 @@
+2 unused step definitions:
+ - Given some precondition that is never used in a feature # FeatureContext::somePrecondition()
+ - Then some step defined in the base class that is never used by a feature # FeatureContext::someBaseClassStepThatIsNeverUsedByAFeature()

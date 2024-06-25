@@ -5,17 +5,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "behat/behat": "^3.0",
+        "behat/behat": "^3.9",
         "symfony/config": "^4.4 || ^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {
-        "nicwortel/coding-standard": "^2.0",
+        "nicwortel/coding-standard": "^2.3",
         "phpstan/phpstan": "^1.8",
         "phpstan/phpstan-symfony": "^1.2",
         "phpunit/phpunit": "^10.3",
         "rector/rector": "^0.18.4",
-        "slevomat/coding-standard": ">=6.3.11",
-        "squizlabs/php_codesniffer": "^3.6",
         "symfony/process": "^6.0"
     },
     "config": {

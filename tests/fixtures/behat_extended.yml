@@ -1,5 +1,0 @@
-default:
-  extensions:
-    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
-      printer: testing_printer
-    NicWortel\BehatUnusedStepDefinitionsExtension\Tests\TestingBehatExtension: ~

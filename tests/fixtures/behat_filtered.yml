@@ -1,4 +1,0 @@
-default:
-  extensions:
-    NicWortel\BehatUnusedStepDefinitionsExtension\Extension:
-      filter: /someStepThatIsNeverUsedByAFeature/
